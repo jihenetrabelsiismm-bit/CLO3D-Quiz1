@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLO3D — Quiz 1 | Modules 1 à 3</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── RESET & BASE ──────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #0E2841;
+    --blue:   #156082;
+    --blue2:  #1a7aa0;
+    --orange: #E97132;
+    --green:  #196B24;
+    --red:    #c0392b;
+    --gold:   #c87d0e;
+    --light:  #EEF4F8;
+    --lighter:#F6F9FB;
+    --border: #C8D8E4;
+    --text:   #1A2C3D;
+    --grey:   #607080;
+    --white:  #FFFFFF;
+
+    --card-radius: 14px;
+    --btn-radius: 10px;
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F0F5F8;
+    min-height: 100vh;
+    color: var(--text);
+    padding-bottom: 80px;
+  }
+
+  /* ── WATERMARK ──────────────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    left: -120px; bottom: -80px;
+    width: 520px; height: 520px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,5 95,90 5,90' fill='none' stroke='%23156082' stroke-width='6'/%3E%3Cpolygon points='50,22 81,82 19,82' fill='none' stroke='%23156082' stroke-width='4'/%3E%3C/svg%3E") no-repeat center / contain;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ─────────────────────────────────────────── */
+  .site-header {
+    background: var(--navy);
+    border-bottom: 4px solid var(--blue);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+
+  .header-brand {
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .brand-badge {
+    background: var(--blue);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 20px; font-weight: 500;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    border-radius: 6px;
+  }
+
+  .brand-label {
+    color: rgba(255,255,255,0.55);
+    font-size: 13px; font-weight: 400;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+  }
+  .brand-label strong { color: #fff; display: block; font-size: 15px; font-weight: 600; }
+
+  .header-meta {
+    display: flex; align-items: center; gap: 20px;
+  }
+
+  .quiz-badge {
+    background: var(--orange);
+    color: #fff; font-size: 12px; font-weight: 700;
+    padding: 5px 12px; border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .module-tags { display: flex; gap: 6px; }
+  .module-tag {
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.75);
+    font-size: 11px; font-weight: 500;
+    padding: 3px 9px; border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── HERO ────────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    padding: 52px 40px 40px;
+    position: relative; overflow: hidden;
+  }
+
+  .hero::after {
+    content: 'QUIZ 1';
+    position: absolute;
+    right: 40px; top: 50%; transform: translateY(-50%);
+    font-family: 'DM Serif Display', serif;
+    font-size: 120px; font-weight: 400;
+    color: rgba(255,255,255,0.06);
+    pointer-events: none;
+    letter-spacing: -4px;
+  }
+
+  .hero-inner { max-width: 860px; position: relative; z-index: 1; }
+
+  .hero-kicker {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600;
+    padding: 5px 14px; border-radius: 20px;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero-kicker::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    color: #fff; font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .hero h1 em { color: #7EC8E3; font-style: italic; }
+
+  .hero p {
+    font-size: 15px; color: rgba(255,255,255,0.72);
+    max-width: 560px; line-height: 1.65;
+    margin-bottom: 28px;
+  }
+
+  .hero-stats {
+    display: flex; gap: 28px; flex-wrap: wrap;
+  }
+  .stat {
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+  }
+  .stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px; font-weight: 500;
+    color: #fff; line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-top: 3px;
+  }
+  .stat-sep { width: 1px; background: rgba(255,255,255,0.15); align-self: stretch; }
+
+  /* ── PROGRESS ───────────────────────────────────────── */
+  .progress-bar-wrap {
+    background: var(--navy);
+    padding: 14px 40px;
+    position: sticky; top: 68px; z-index: 99;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 18px;
+  }
+
+  .progress-label {
+    color: rgba(255,255,255,0.55);
+    font-size: 12px; font-weight: 500;
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+    min-width: 110px;
+  }
+  .progress-label span { color: #fff; }
+
+  .progress-track {
+    flex: 1; height: 6px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 10px; overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--blue) 0%, #4DAFCC 100%);
+    border-radius: 10px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  .score-live {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #fff; font-size: 13px; font-weight: 600;
+    padding: 5px 14px; border-radius: 20px;
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+    transition: var(--transition);
+  }
+  .score-live .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+
+  /* ── MAIN CONTENT ───────────────────────────────────── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px 0;
+    position: relative; z-index: 1;
+  }
+
+  /* ── SECTION DIVIDERS ───────────────────────────────── */
+  .section-divider {
+    display: flex; align-items: center; gap: 16px;
+    margin: 48px 0 24px;
+  }
+  .section-divider:first-child { margin-top: 0; }
+
+  .section-pill {
+    background: var(--blue);
+    color: #fff; font-size: 11px; font-weight: 700;
+    padding: 6px 16px; border-radius: 20px;
+    letter-spacing: 1px; text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(21,96,130,0.35);
+  }
+  .section-pill.orange { background: var(--orange); box-shadow: 0 3px 10px rgba(233,113,50,0.35); }
+  .section-pill.navy { background: var(--navy); box-shadow: 0 3px 10px rgba(14,40,65,0.35); }
+
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 19px; color: var(--navy);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  /* ── QUESTION CARD ──────────────────────────────────── */
+  .question-card {
+    background: var(--white);
+    border-radius: var(--card-radius);
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(14,40,65,0.06);
+    transition: box-shadow var(--transition);
+    animation: slideUp 0.35s ease both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .question-card:hover { box-shadow: 0 6px 24px rgba(14,40,65,0.1); }
+
+  .question-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+
+  .q-number {
+    background: var(--navy);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; font-weight: 500;
+    min-width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .q-number.blue { background: var(--blue); }
+  .q-number.orange { background: var(--orange); }
+
+  .q-type-badge {
+    font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    padding: 2px 8px; border-radius: 10px;
+    display: inline-block; margin-bottom: 6px;
+  }
+  .q-type-badge.qcm { background: #E8F2F8; color: var(--blue); }
+  .q-type-badge.vf  { background: #FFF0E8; color: var(--orange); }
+  .q-type-badge.match { background: #E8F5EC; color: var(--green); }
+  .q-type-badge.fill { background: #F2F0FF; color: #5B35B5; }
+
+  .q-text {
+    font-size: 15.5px; font-weight: 500; color: var(--navy);
+    line-height: 1.55;
+  }
+
+  .q-note {
+    font-size: 12px; color: var(--grey);
+    margin-top: 6px; font-style: italic;
+  }
+
+  .question-body { padding: 20px 24px 22px; }
+
+  /* ── OPTIONS (QCM) ──────────────────────────────────── */
+  .options { display: flex; flex-direction: column; gap: 9px; }
+
+  .option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--btn-radius);
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+    background: var(--lighter);
+    user-select: none;
+  }
+
+  .option:hover:not(.locked) {
+    border-color: var(--blue);
+    background: #EBF4FA;
+    transform: translateX(3px);
+  }
+
+  .option.selected:not(.locked) {
+    border-color: var(--blue);
+    background: #EBF4FA;
+  }
+
+  .option.locked { cursor: default; transform: none !important; }
+
+  .option.correct {
+    border-color: var(--green);
+    background: #EBF7EE;
+  }
+  .option.incorrect {
+    border-color: var(--red);
+    background: #FCECEA;
+  }
+  .option.missed {
+    border-color: var(--green);
+    background: #F0F9F3;
+    opacity: 0.75;
+  }
+
+  .opt-letter {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    background: var(--border);
+    color: var(--navy); font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: var(--transition);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .option.correct .opt-letter   { background: var(--green); color: #fff; }
+  .option.incorrect .opt-letter { background: var(--red);   color: #fff; }
+  .option.missed .opt-letter    { background: var(--green); color: #fff; }
+  .option.selected:not(.locked) .opt-letter { background: var(--blue); color: #fff; }
+
+  .opt-text {
+    font-size: 14px; color: var(--text); line-height: 1.45;
+    flex: 1;
+  }
+
+  .opt-icon {
+    font-size: 18px; flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .option.correct .opt-icon,
+  .option.incorrect .opt-icon,
+  .option.missed .opt-icon { opacity: 1; }
+
+  /* ── VRAI / FAUX ────────────────────────────────────── */
+  .vf-options { display: flex; gap: 12px; }
+
+  .vf-btn {
+    flex: 1;
+    padding: 16px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--btn-radius);
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    transition: all var(--transition);
+    background: var(--lighter);
+    user-select: none;
+  }
+  .vf-btn:hover:not(.locked) {
+    border-color: var(--blue); background: #EBF4FA;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(21,96,130,0.15);
+  }
+  .vf-btn .vf-emoji { font-size: 28px; }
+  .vf-btn .vf-label { font-size: 14px; font-weight: 600; color: var(--navy); }
+
+  .vf-btn.correct { border-color: var(--green); background: #EBF7EE; }
+  .vf-btn.incorrect { border-color: var(--red); background: #FCECEA; }
+  .vf-btn.missed { border-color: var(--green); background: #F0F9F3; opacity: 0.7; }
+  .vf-btn.selected:not(.locked) { border-color: var(--blue); background: #EBF4FA; }
+
+  /* ── MATCH / RELIER ─────────────────────────────────── */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px 16px;
+    align-items: center;
+  }
+
+  .match-left {
+    padding: 10px 14px;
+    background: var(--navy);
+    color: #fff; font-size: 13px; font-weight: 500;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .match-arrow { color: var(--blue); font-size: 20px; text-align: center; }
+
+  .match-select {
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; color: var(--text);
+    background: var(--lighter);
+    cursor: pointer;
+    width: 100%;
+    transition: var(--transition);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23156082' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+  }
+  .match-select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,96,130,0.15); }
+  .match-select.correct { border-color: var(--green); background-color: #EBF7EE; }
+  .match-select.incorrect { border-color: var(--red); background-color: #FCECEA; }
+
+  /* ── FILL IN THE BLANK ──────────────────────────────── */
+  .fill-blank-wrap { position: relative; }
+
+  .fill-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--btn-radius);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px; color: var(--text);
+    background: var(--lighter);
+    transition: var(--transition);
+  }
+  .fill-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(21,96,130,0.15); background: #fff; }
+  .fill-input.correct { border-color: var(--green); background: #EBF7EE; color: var(--green); }
+  .fill-input.incorrect { border-color: var(--red); background: #FCECEA; color: var(--red); }
+  .fill-input:disabled { cursor: default; }
+
+  .fill-hint { font-size: 12px; color: var(--grey); margin-top: 6px; font-family: 'DM Mono', monospace; }
+
+  /* ── VALIDATE BUTTON ─────────────────────────────────── */
+  .btn-validate {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue);
+    color: #fff; font-weight: 600; font-size: 14px;
+    padding: 11px 24px; border-radius: var(--btn-radius);
+    border: none; cursor: pointer;
+    margin-top: 16px;
+    transition: all var(--transition);
+    box-shadow: 0 3px 10px rgba(21,96,130,0.3);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-validate:hover:not(:disabled) {
+    background: var(--blue2);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(21,96,130,0.4);
+  }
+  .btn-validate:disabled { opacity: 0.45; cursor: default; transform: none; }
+  .btn-validate.validated { background: var(--navy); pointer-events: none; }
+
+  /* ── FEEDBACK PANEL ──────────────────────────────────── */
+  .feedback {
+    margin-top: 14px;
+    padding: 13px 16px;
+    border-radius: var(--btn-radius);
+    font-size: 13.5px; line-height: 1.55;
+    display: none;
+    animation: fadeIn 0.3s ease;
+    border-left: 4px solid transparent;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+  .feedback.visible { display: block; }
+  .feedback.correct-fb { background: #EBF7EE; border-color: var(--green); color: #145C1D; }
+  .feedback.incorrect-fb { background: #FCECEA; border-color: var(--red); color: #922B21; }
+
+  .feedback strong { font-weight: 700; display: block; margin-bottom: 4px; font-size: 14px; }
+  .feedback .correct-answer { color: var(--green); font-family: 'DM Mono', monospace; font-weight: 600; }
+
+  /* ── RESULTS SCREEN ──────────────────────────────────── */
+  #results-screen {
+    display: none;
+    background: var(--white);
+    border-radius: 18px;
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+    margin-top: 48px;
+    box-shadow: 0 8px 40px rgba(14,40,65,0.12);
+    animation: slideUp 0.5s ease both;
+  }
+
+  .results-header {
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    padding: 44px 48px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .results-header::after {
+    content: '✓';
+    position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+    font-size: 100px; opacity: 0.08; color: #fff;
+  }
+
+  .results-score-ring {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    border: 6px solid rgba(255,255,255,0.2);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 0 auto 22px;
+    position: relative;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .results-score-ring::before {
+    content: '';
+    position: absolute; inset: -6px;
+    border-radius: 50%;
+    border: 6px solid transparent;
+    border-top-color: var(--orange);
+    border-right-color: var(--orange);
+    animation: spin 1.5s ease-out forwards;
+  }
+  @keyframes spin { from { transform: rotate(-90deg); } to { transform: rotate(270deg); } }
+
+  .score-big {
+    font-family: 'DM Mono', monospace;
+    font-size: 38px; font-weight: 500;
+    color: #fff; line-height: 1;
+  }
+  .score-denom { font-size: 13px; color: rgba(255,255,255,0.55); }
+
+  .results-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px; color: #fff; font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .results-subtitle { font-size: 14px; color: rgba(255,255,255,0.65); }
+
+  .results-body { padding: 36px 48px; }
+
+  .results-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 32px;
+  }
+
+  .result-stat {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+    text-align: center;
+  }
+  .result-stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 32px; font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .result-stat-val.good { color: var(--green); }
+  .result-stat-val.bad  { color: var(--red); }
+  .result-stat-val.neutral { color: var(--blue); }
+  .result-stat-label { font-size: 12px; color: var(--grey); text-transform: uppercase; letter-spacing: 0.8px; }
+
+  .appreciation {
+    padding: 18px 22px;
+    border-radius: 12px;
+    font-size: 15px; line-height: 1.6;
+    margin-bottom: 24px;
+    border-left: 4px solid transparent;
+  }
+  .appreciation.excellent { background: #EBF7EE; border-color: var(--green); color: #145C1D; }
+  .appreciation.good { background: #EBF4FA; border-color: var(--blue); color: #0A3A50; }
+  .appreciation.average { background: #FFF8EE; border-color: var(--gold); color: #7A4A00; }
+  .appreciation.poor { background: #FCECEA; border-color: var(--red); color: #922B21; }
+
+  .btn-retry {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--navy);
+    color: #fff; font-weight: 600; font-size: 14px;
+    padding: 13px 28px; border-radius: var(--btn-radius);
+    border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all var(--transition);
+    box-shadow: 0 4px 14px rgba(14,40,65,0.3);
+  }
+  .btn-retry:hover { background: var(--blue); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14,40,65,0.35); }
+
+  .btn-submit-all {
+    display: none;
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    color: #fff; font-weight: 700; font-size: 15px;
+    padding: 16px 36px; border-radius: var(--btn-radius);
+    border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all var(--transition);
+    box-shadow: 0 6px 22px rgba(21,96,130,0.4);
+    margin: 40px auto 0;
+    width: 100%;
+    letter-spacing: 0.3px;
+  }
+  .btn-submit-all:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(21,96,130,0.5); }
+  .btn-submit-all.visible { display: block; }
+
+  /* ── FOOTER ──────────────────────────────────────────── */
+  footer {
+    background: var(--navy);
+    padding: 18px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 80px;
+    position: relative; z-index: 1;
+  }
+  .footer-text { color: rgba(255,255,255,0.45); font-size: 12px; }
+
+  /* ── RESPONSIVE ──────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .hero::after { display: none; }
+    .site-header { padding: 0 20px; }
+    .hero { padding: 36px 20px 28px; }
+    .progress-bar-wrap { padding: 12px 20px; }
+    main { padding: 32px 16px 0; }
+    .results-body { padding: 24px; }
+    .results-grid { grid-template-columns: 1fr 1fr; }
+    .match-grid { grid-template-columns: 1fr; }
+    .match-arrow { display: none; }
+    .module-tags { display: none; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ──────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-brand">
+    <div class="brand-badge">CLO3D</div>
+    <div class="brand-label">
+      <strong>Quiz d'Évaluation</strong>
+      Modélisation 3D de Vêtements
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="module-tags">
+      <span class="module-tag">Module 1</span>
+      <span class="module-tag">Module 2</span>
+      <span class="module-tag">Module 3</span>
+    </div>
+    <span class="quiz-badge">Quiz 1 / 2</span>
+  </div>
+</header>
+
+<!-- ── PROGRESS BAR ────────────────────────────────────── -->
+<div class="progress-bar-wrap">
+  <div class="progress-label">Progression <span id="progress-text">0 / 12</span></div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="score-live" id="score-live">
+    <span class="dot"></span>
+    <span id="score-display">0 pt</span>
+  </div>
+</div>
+
+<!-- ── HERO ────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">Évaluation formative</div>
+    <h1>Quiz 1 — <em>Introduction, Interface & Patrons</em></h1>
+    <p>Testez vos connaissances sur les trois premiers modules du cours CLO3D. Chaque question validée est définitive — lisez attentivement avant de répondre.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val">12</span>
+        <span class="stat-label">Questions</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat">
+        <span class="stat-val">20</span>
+        <span class="stat-label">Points</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat">
+        <span class="stat-val">~15'</span>
+        <span class="stat-label">Durée estimée</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat">
+        <span class="stat-val">M1–M3</span>
+        <span class="stat-label">Modules couverts</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MAIN ────────────────────────────────────────────── -->
+<main id="quiz-main">
+
+  <!-- ══ SECTION 1 — MODULE 1 ════════════════════════════ -->
+  <div class="section-divider">
+    <div class="section-pill">Module 1</div>
+    <div class="section-line"></div>
+    <span class="section-title">Introduction à CLO3D</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q1 — QCM -->
+  <div class="question-card" style="animation-delay:0.05s">
+    <div class="question-header">
+      <div class="q-number blue">01</div>
+      <div>
+        <span class="q-type-badge qcm">QCM</span>
+        <div class="q-text">Par quelle société et en quelle année CLO3D a-t-il été développé ?</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="options" id="q1-options">
+        <div class="option" data-q="1" data-val="A" onclick="selectOption(this,1,'A')">
+          <div class="opt-letter">A</div>
+          <div class="opt-text">Adobe Systems, en 2005</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="1" data-val="B" onclick="selectOption(this,1,'B')">
+          <div class="opt-letter">B</div>
+          <div class="opt-text">CLO Virtual Fashion Inc., société coréenne, en 2009</div>
+          <div class="opt-icon">✓</div>
+        </div>
+        <div class="option" data-q="1" data-val="C" onclick="selectOption(this,1,'C')">
+          <div class="opt-letter">C</div>
+          <div class="opt-text">Lectra SA, entreprise française, en 2012</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="1" data-val="D" onclick="selectOption(this,1,'D')">
+          <div class="opt-letter">D</div>
+          <div class="opt-text">Autodesk, en 2015</div>
+          <div class="opt-icon">✗</div>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q1" onclick="validateQCM(1,'B',2)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q1"></div>
+    </div>
+  </div>
+
+  <!-- Q2 — Vrai/Faux -->
+  <div class="question-card" style="animation-delay:0.1s">
+    <div class="question-header">
+      <div class="q-number blue">02</div>
+      <div>
+        <span class="q-type-badge vf">Vrai / Faux</span>
+        <div class="q-text">CLO3D permet uniquement de visualiser des vêtements en 3D, mais ne peut pas simuler les propriétés physiques des tissus (tombé, plis, élasticité).</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="vf-options">
+        <div class="vf-btn" id="vf2-true" onclick="selectVF(2,'true')">
+          <span class="vf-emoji">✅</span>
+          <span class="vf-label">VRAI</span>
+        </div>
+        <div class="vf-btn" id="vf2-false" onclick="selectVF(2,'false')">
+          <span class="vf-emoji">❌</span>
+          <span class="vf-label">FAUX</span>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q2" onclick="validateVF(2,'false',1)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q2"></div>
+    </div>
+  </div>
+
+  <!-- Q3 — QCM -->
+  <div class="question-card" style="animation-delay:0.15s">
+    <div class="question-header">
+      <div class="q-number blue">03</div>
+      <div>
+        <span class="q-type-badge qcm">QCM</span>
+        <div class="q-text">Parmi les avantages de la mode numérique avec CLO3D, lequel n'est PAS mentionné dans le cours ?</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="options" id="q3-options">
+        <div class="option" data-q="3" data-val="A" onclick="selectOption(this,3,'A')">
+          <div class="opt-letter">A</div>
+          <div class="opt-text">Réduction des coûts de prototypage</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="3" data-val="B" onclick="selectOption(this,3,'B')">
+          <div class="opt-letter">B</div>
+          <div class="opt-text">Zéro déchet de matières en phase de test</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="3" data-val="C" onclick="selectOption(this,3,'C')">
+          <div class="opt-letter">C</div>
+          <div class="opt-text">Remplacement automatique des couturiers traditionnels</div>
+          <div class="opt-icon">✓</div>
+        </div>
+        <div class="option" data-q="3" data-val="D" onclick="selectOption(this,3,'D')">
+          <div class="opt-letter">D</div>
+          <div class="opt-text">Personnalisation à grande échelle</div>
+          <div class="opt-icon">✗</div>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q3" onclick="validateQCM(3,'C',1)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q3"></div>
+    </div>
+  </div>
+
+  <!-- Q4 — Match -->
+  <div class="question-card" style="animation-delay:0.2s">
+    <div class="question-header">
+      <div class="q-number orange">04</div>
+      <div>
+        <span class="q-type-badge match">Correspondances</span>
+        <div class="q-text">Reliez chaque logiciel à son rôle dans l'écosystème CLO3D.</div>
+        <div class="q-note">Sélectionnez la bonne correspondance pour chaque logiciel.</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="match-grid">
+        <div class="match-left">Lectra Modaris</div>
+        <div class="match-arrow">→</div>
+        <select class="match-select" id="match4-1">
+          <option value="">-- Choisir --</option>
+          <option value="a">Import/export de patrons (DXF)</option>
+          <option value="b">Rendu photoréaliste haute résolution</option>
+          <option value="c">Création de textures et coloris</option>
+          <option value="d">Intégration dans le jeu vidéo/cinéma</option>
+        </select>
+
+        <div class="match-left">KeyShot</div>
+        <div class="match-arrow">→</div>
+        <select class="match-select" id="match4-2">
+          <option value="">-- Choisir --</option>
+          <option value="a">Import/export de patrons (DXF)</option>
+          <option value="b">Rendu photoréaliste haute résolution</option>
+          <option value="c">Création de textures et coloris</option>
+          <option value="d">Intégration dans le jeu vidéo/cinéma</option>
+        </select>
+
+        <div class="match-left">Marvelous Designer</div>
+        <div class="match-arrow">→</div>
+        <select class="match-select" id="match4-3">
+          <option value="">-- Choisir --</option>
+          <option value="a">Import/export de patrons (DXF)</option>
+          <option value="b">Rendu photoréaliste haute résolution</option>
+          <option value="c">Création de textures et coloris</option>
+          <option value="d">Intégration dans le jeu vidéo/cinéma</option>
+        </select>
+
+        <div class="match-left">Adobe Photoshop</div>
+        <div class="match-arrow">→</div>
+        <select class="match-select" id="match4-4">
+          <option value="">-- Choisir --</option>
+          <option value="a">Import/export de patrons (DXF)</option>
+          <option value="b">Rendu photoréaliste haute résolution</option>
+          <option value="c">Création de textures et coloris</option>
+          <option value="d">Intégration dans le jeu vidéo/cinéma</option>
+        </select>
+      </div>
+      <button class="btn-validate" id="btn-q4" onclick="validateMatch(4,['a','b','d','c'],2)">
+        ✔ Valider mes correspondances
+      </button>
+      <div class="feedback" id="fb-q4"></div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 2 — MODULE 2 ════════════════════════════ -->
+  <div class="section-divider" style="margin-top:56px;">
+    <div class="section-pill navy">Module 2</div>
+    <div class="section-line"></div>
+    <span class="section-title">L'Interface CLO3D</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q5 — QCM -->
+  <div class="question-card" style="animation-delay:0.05s">
+    <div class="question-header">
+      <div class="q-number">05</div>
+      <div>
+        <span class="q-type-badge qcm">QCM</span>
+        <div class="q-text">Quelle est la particularité fondamentale de l'interface de CLO3D qui la distingue des logiciels de patronage traditionnels ?</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="options" id="q5-options">
+        <div class="option" data-q="5" data-val="A" onclick="selectOption(this,5,'A')">
+          <div class="opt-letter">A</div>
+          <div class="opt-text">Elle dispose d'un mode réalité virtuelle immersive</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="5" data-val="B" onclick="selectOption(this,5,'B')">
+          <div class="opt-letter">B</div>
+          <div class="opt-text">La synchronisation permanente entre la fenêtre 2D (patronage) et la fenêtre 3D (simulation) en temps réel</div>
+          <div class="opt-icon">✓</div>
+        </div>
+        <div class="option" data-q="5" data-val="C" onclick="selectOption(this,5,'C')">
+          <div class="opt-letter">C</div>
+          <div class="opt-text">Elle fonctionne entièrement en ligne sans installation</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="5" data-val="D" onclick="selectOption(this,5,'D')">
+          <div class="opt-letter">D</div>
+          <div class="opt-text">Elle génère automatiquement les patrons à partir d'une photo</div>
+          <div class="opt-icon">✗</div>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q5" onclick="validateQCM(5,'B',2)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q5"></div>
+    </div>
+  </div>
+
+  <!-- Q6 — Vrai/Faux -->
+  <div class="question-card" style="animation-delay:0.1s">
+    <div class="question-header">
+      <div class="q-number">06</div>
+      <div>
+        <span class="q-type-badge vf">Vrai / Faux</span>
+        <div class="q-text">Dans CLO3D, le raccourci clavier <code style="background:#EEF4F8;padding:2px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:13px">Alt + Clic gauche</code> permet de faire pivoter (orbiter) la vue autour de l'avatar dans la fenêtre 3D.</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="vf-options">
+        <div class="vf-btn" id="vf6-true" onclick="selectVF(6,'true')">
+          <span class="vf-emoji">✅</span>
+          <span class="vf-label">VRAI</span>
+        </div>
+        <div class="vf-btn" id="vf6-false" onclick="selectVF(6,'false')">
+          <span class="vf-emoji">❌</span>
+          <span class="vf-label">FAUX</span>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q6" onclick="validateVF(6,'true',1)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q6"></div>
+    </div>
+  </div>
+
+  <!-- Q7 — QCM -->
+  <div class="question-card" style="animation-delay:0.15s">
+    <div class="question-header">
+      <div class="q-number">07</div>
+      <div>
+        <span class="q-type-badge qcm">QCM</span>
+        <div class="q-text">Quel panneau CLO3D change dynamiquement son contenu selon l'objet sélectionné (tissu, couture, avatar...) ?</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="options" id="q7-options">
+        <div class="option" data-q="7" data-val="A" onclick="selectOption(this,7,'A')">
+          <div class="opt-letter">A</div>
+          <div class="opt-text">La Bibliothèque (Library Panel)</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="7" data-val="B" onclick="selectOption(this,7,'B')">
+          <div class="opt-letter">B</div>
+          <div class="opt-text">L'Object Browser</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="7" data-val="C" onclick="selectOption(this,7,'C')">
+          <div class="opt-letter">C</div>
+          <div class="opt-text">Le Property Editor (Panneau de propriétés)</div>
+          <div class="opt-icon">✓</div>
+        </div>
+        <div class="option" data-q="7" data-val="D" onclick="selectOption(this,7,'D')">
+          <div class="opt-letter">D</div>
+          <div class="opt-text">La barre d'outils principale (Toolbar)</div>
+          <div class="opt-icon">✗</div>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q7" onclick="validateQCM(7,'C',1)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q7"></div>
+    </div>
+  </div>
+
+  <!-- Q8 — Fill in the blank -->
+  <div class="question-card" style="animation-delay:0.2s">
+    <div class="question-header">
+      <div class="q-number orange">08</div>
+      <div>
+        <span class="q-type-badge fill">Compléter</span>
+        <div class="q-text">Complétez : Le fichier projet natif de CLO3D a pour extension <strong>___</strong>, tandis que pour exporter vers des moteurs de jeu (Unity, Unreal), on utilise le format <strong>___</strong>.</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <label style="font-size:12px;color:var(--grey);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Extension fichier projet</label>
+          <div class="fill-blank-wrap">
+            <input type="text" class="fill-input" id="fill8a" placeholder=".xxxx" maxlength="6">
+          </div>
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--grey);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Format pour moteurs de jeu</label>
+          <div class="fill-blank-wrap">
+            <input type="text" class="fill-input" id="fill8b" placeholder=".xxx" maxlength="5">
+          </div>
+        </div>
+      </div>
+      <div class="fill-hint">Conseil : saisir l'extension avec ou sans le point (ex : .zprj ou zprj)</div>
+      <button class="btn-validate" id="btn-q8" onclick="validateFill8()" style="margin-top:14px;">
+        ✔ Valider mes réponses
+      </button>
+      <div class="feedback" id="fb-q8"></div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 3 — MODULE 3 ════════════════════════════ -->
+  <div class="section-divider" style="margin-top:56px;">
+    <div class="section-pill orange">Module 3</div>
+    <div class="section-line"></div>
+    <span class="section-title">Importation & Gestion des Patrons</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q9 — QCM -->
+  <div class="question-card" style="animation-delay:0.05s">
+    <div class="question-header">
+      <div class="q-number orange">09</div>
+      <div>
+        <span class="q-type-badge qcm">QCM</span>
+        <div class="q-text">Quel format de fichier est considéré comme le standard de l'industrie textile pour l'échange de patrons entre logiciels de CAD ?</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="options" id="q9-options">
+        <div class="option" data-q="9" data-val="A" onclick="selectOption(this,9,'A')">
+          <div class="opt-letter">A</div>
+          <div class="opt-text">.SVG (Scalable Vector Graphics)</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="9" data-val="B" onclick="selectOption(this,9,'B')">
+          <div class="opt-letter">B</div>
+          <div class="opt-text">.OBJ (Wavefront)</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="9" data-val="C" onclick="selectOption(this,9,'C')">
+          <div class="opt-letter">C</div>
+          <div class="opt-text">.DXF (Drawing eXchange Format)</div>
+          <div class="opt-icon">✓</div>
+        </div>
+        <div class="option" data-q="9" data-val="D" onclick="selectOption(this,9,'D')">
+          <div class="opt-letter">D</div>
+          <div class="opt-text">.ZPRJ (CLO Project File)</div>
+          <div class="opt-icon">✗</div>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q9" onclick="validateQCM(9,'C',2)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q9"></div>
+    </div>
+  </div>
+
+  <!-- Q10 — Vrai/Faux -->
+  <div class="question-card" style="animation-delay:0.1s">
+    <div class="question-header">
+      <div class="q-number orange">10</div>
+      <div>
+        <span class="q-type-badge vf">Vrai / Faux</span>
+        <div class="q-text">Selon le cours, un mauvais positionnement initial des pièces autour de l'avatar (pièces qui se croisent) est la première cause d'erreurs de simulation dans CLO3D.</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="vf-options">
+        <div class="vf-btn" id="vf10-true" onclick="selectVF(10,'true')">
+          <span class="vf-emoji">✅</span>
+          <span class="vf-label">VRAI</span>
+        </div>
+        <div class="vf-btn" id="vf10-false" onclick="selectVF(10,'false')">
+          <span class="vf-emoji">❌</span>
+          <span class="vf-label">FAUX</span>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q10" onclick="validateVF(10,'true',2)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q10"></div>
+    </div>
+  </div>
+
+  <!-- Q11 — QCM -->
+  <div class="question-card" style="animation-delay:0.15s">
+    <div class="question-header">
+      <div class="q-number orange">11</div>
+      <div>
+        <span class="q-type-badge qcm">QCM</span>
+        <div class="q-text">Quel outil CLO3D doit-on utiliser pour tracer des courbes complexes comme les emmanchures et les encolures lors de la création d'un patron depuis zéro ?</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="options" id="q11-options">
+        <div class="option" data-q="11" data-val="A" onclick="selectOption(this,11,'A')">
+          <div class="opt-letter">A</div>
+          <div class="opt-text">L'outil Rectangle</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="11" data-val="B" onclick="selectOption(this,11,'B')">
+          <div class="opt-letter">B</div>
+          <div class="opt-text">L'outil Polygone</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="11" data-val="C" onclick="selectOption(this,11,'C')">
+          <div class="opt-letter">C</div>
+          <div class="opt-text">L'outil Courbe de Bézier</div>
+          <div class="opt-icon">✓</div>
+        </div>
+        <div class="option" data-q="11" data-val="D" onclick="selectOption(this,11,'D')">
+          <div class="opt-letter">D</div>
+          <div class="opt-text">L'outil Point interne</div>
+          <div class="opt-icon">✗</div>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q11" onclick="validateQCM(11,'C',1)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q11"></div>
+    </div>
+  </div>
+
+  <!-- Q12 — QCM (synthesis) -->
+  <div class="question-card" style="animation-delay:0.2s">
+    <div class="question-header">
+      <div class="q-number orange">12</div>
+      <div>
+        <span class="q-type-badge qcm">QCM — Synthèse</span>
+        <div class="q-text">Dans la procédure d'import DXF, dans quel ordre ces étapes sont-elles réalisées ?</div>
+        <div class="q-note">Choisissez la séquence correcte.</div>
+      </div>
+    </div>
+    <div class="question-body">
+      <div class="options" id="q12-options">
+        <div class="option" data-q="12" data-val="A" onclick="selectOption(this,12,'A')">
+          <div class="opt-letter">A</div>
+          <div class="opt-text">Valider → Choisir le système de mesure → Sélectionner la version AAMA/ASTM → Aller dans File > Import</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="12" data-val="B" onclick="selectOption(this,12,'B')">
+          <div class="opt-letter">B</div>
+          <div class="opt-text">File > Import > DXF → Sélectionner le fichier → Choisir le système de mesure → Sélectionner la version AAMA/ASTM → Valider</div>
+          <div class="opt-icon">✓</div>
+        </div>
+        <div class="option" data-q="12" data-val="C" onclick="selectOption(this,12,'C')">
+          <div class="opt-letter">C</div>
+          <div class="opt-text">Sélectionner la version AAMA/ASTM → File > Import > DXF → Choisir le système de mesure → Valider</div>
+          <div class="opt-icon">✗</div>
+        </div>
+        <div class="option" data-q="12" data-val="D" onclick="selectOption(this,12,'D')">
+          <div class="opt-letter">D</div>
+          <div class="opt-text">File > Import > DXF → Valider → Choisir le système de mesure → Sélectionner la version</div>
+          <div class="opt-icon">✗</div>
+        </div>
+      </div>
+      <button class="btn-validate" id="btn-q12" onclick="validateQCM(12,'B',3)" disabled>
+        ✔ Valider ma réponse
+      </button>
+      <div class="feedback" id="fb-q12"></div>
+    </div>
+  </div>
+
+  <!-- SUBMIT ALL BUTTON -->
+  <button class="btn-submit-all" id="btn-submit-all" onclick="showResults()">
+    🏁 Voir mes résultats finaux
+  </button>
+
+  <!-- ── RESULTS SCREEN ──────────────────────────────────── -->
+  <div id="results-screen">
+    <div class="results-header">
+      <div class="results-score-ring">
+        <div class="score-big" id="r-score">—</div>
+        <div class="score-denom">/20 pts</div>
+      </div>
+      <div class="results-title" id="r-title">Résultats du Quiz 1</div>
+      <div class="results-subtitle" id="r-subtitle">Modules 1 — 2 — 3 · CLO3D</div>
+    </div>
+    <div class="results-body">
+      <div class="results-grid">
+        <div class="result-stat">
+          <div class="result-stat-val good" id="r-correct">—</div>
+          <div class="result-stat-label">Bonnes réponses</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-val bad" id="r-wrong">—</div>
+          <div class="result-stat-label">Mauvaises réponses</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-val neutral" id="r-pct">—</div>
+          <div class="result-stat-label">Score en %</div>
+        </div>
+      </div>
+      <div class="appreciation" id="r-appreciation"></div>
+      <div style="text-align:center">
+        <button class="btn-retry" onclick="retryQuiz()">
+          ↺ Recommencer le quiz
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer>
+  <div class="footer-text">
+    Département Design Textile et Mode · Master · Année universitaire 2025–2026
+  </div>
+  <div class="footer-text" style="display:flex;align-items:center;gap:16px;">
+    <span>CLO3D · Quiz 1 / 2</span>
+    <span style="color:rgba(255,255,255,0.2)">|</span>
+    <span>Modules 1 · 2 · 3</span>
+  </div>
+</footer>
+
+<script>
+// ── STATE ────────────────────────────────────────────────
+const state = {
+  selections: {},   // q# -> selected value
+  validated: {},    // q# -> true/false
+  scores: {},       // q# -> points earned
+  totalPoints: 0,
+  maxPoints: 20,
+  questionsAnswered: 0,
+  totalQuestions: 12,
+};
+
+// ── PROGRESS UPDATE ──────────────────────────────────────
+function updateProgress() {
+  const answered = Object.keys(state.validated).length;
+  const pct = (answered / state.totalQuestions) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = answered + ' / ' + state.totalQuestions;
+
+  const pts = Object.values(state.scores).reduce((a, b) => a + b, 0);
+  document.getElementById('score-display').textContent = pts + ' pt' + (pts > 1 ? 's' : '');
+
+  // Show submit button when all answered
+  if (answered === state.totalQuestions) {
+    document.getElementById('btn-submit-all').classList.add('visible');
+  }
+}
+
+// ── SELECT OPTION (QCM) ──────────────────────────────────
+function selectOption(el, qNum, val) {
+  if (state.validated[qNum]) return;
+  // Deselect all
+  document.querySelectorAll(`[data-q="${qNum}"]`).forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selections[qNum] = val;
+  document.getElementById(`btn-q${qNum}`).disabled = false;
+}
+
+// ── SELECT VF ────────────────────────────────────────────
+function selectVF(qNum, val) {
+  if (state.validated[qNum]) return;
+  document.getElementById(`vf${qNum}-true`).classList.remove('selected');
+  document.getElementById(`vf${qNum}-false`).classList.remove('selected');
+  document.getElementById(`vf${qNum}-${val}`).classList.add('selected');
+  state.selections[qNum] = val;
+  document.getElementById(`btn-q${qNum}`).disabled = false;
+}
+
+// ── VALIDATE QCM ────────────────────────────────────────
+function validateQCM(qNum, correctVal, points) {
+  if (state.validated[qNum]) return;
+  const sel = state.selections[qNum];
+  if (!sel) return;
+
+  state.validated[qNum] = true;
+  const isCorrect = sel === correctVal;
+  const earned = isCorrect ? points : 0;
+  state.scores[qNum] = earned;
+
+  // Lock all options
+  document.querySelectorAll(`[data-q="${qNum}"]`).forEach(opt => {
+    opt.classList.add('locked');
+    const optVal = opt.dataset.val;
+    if (optVal === correctVal) opt.classList.add('correct');
+    else if (optVal === sel && !isCorrect) opt.classList.add('incorrect');
+  });
+
+  showFeedback(qNum, isCorrect, correctVal, earned, points);
+  markButton(qNum, isCorrect);
+  updateProgress();
+}
+
+// ── VALIDATE VF ─────────────────────────────────────────
+function validateVF(qNum, correctVal, points) {
+  if (state.validated[qNum]) return;
+  const sel = state.selections[qNum];
+  if (!sel) return;
+
+  state.validated[qNum] = true;
+  const isCorrect = sel === correctVal;
+  const earned = isCorrect ? points : 0;
+  state.scores[qNum] = earned;
+
+  ['true', 'false'].forEach(v => {
+    const btn = document.getElementById(`vf${qNum}-${v}`);
+    btn.classList.add('locked');
+    if (v === correctVal) btn.classList.add('correct');
+    else if (v === sel && !isCorrect) btn.classList.add('incorrect');
+  });
+
+  showFeedback(qNum, isCorrect, correctVal === 'true' ? 'VRAI' : 'FAUX', earned, points);
+  markButton(qNum, isCorrect);
+  updateProgress();
+}
+
+// ── VALIDATE MATCH ───────────────────────────────────────
+function validateMatch(qNum, correctVals, points) {
+  if (state.validated[qNum]) return;
+
+  const selects = [
+    document.getElementById('match4-1'),
+    document.getElementById('match4-2'),
+    document.getElementById('match4-3'),
+    document.getElementById('match4-4'),
+  ];
+
+  let allFilled = selects.every(s => s.value !== '');
+  if (!allFilled) {
+    alert('Veuillez remplir toutes les correspondances.');
+    return;
+  }
+
+  state.validated[qNum] = true;
+  let correct = 0;
+  selects.forEach((sel, i) => {
+    sel.disabled = true;
+    if (sel.value === correctVals[i]) {
+      sel.classList.add('correct');
+      correct++;
+    } else {
+      sel.classList.add('incorrect');
+    }
+  });
+
+  const earned = correct === 4 ? points : correct >= 3 ? 1 : 0;
+  state.scores[qNum] = earned;
+
+  const isCorrect = correct === 4;
+  const fbMsg = correct === 4
+    ? 'Toutes les correspondances sont correctes !'
+    : `${correct}/4 correspondances correctes. Réponses correctes : Lectra Modaris → Import/export DXF · KeyShot → Rendu photoréaliste · Marvelous Designer → Jeu vidéo/cinéma · Adobe Photoshop → Textures et coloris`;
+
+  const fb = document.getElementById(`fb-q${qNum}`);
+  fb.className = `feedback visible ${isCorrect ? 'correct-fb' : 'incorrect-fb'}`;
+  fb.innerHTML = `<strong>${isCorrect ? '✓ Excellent !' : `⚠ ${correct}/4 correctes`}</strong>${fbMsg}`;
+
+  markButton(qNum, isCorrect);
+  updateProgress();
+}
+
+// ── VALIDATE FILL Q8 ─────────────────────────────────────
+function validateFill8() {
+  if (state.validated[8]) return;
+
+  const a = document.getElementById('fill8a').value.trim().toLowerCase().replace('.', '');
+  const b = document.getElementById('fill8b').value.trim().toLowerCase().replace('.', '');
+
+  const correctA = 'zprj';
+  const correctB = 'fbx';
+
+  const okA = a === correctA;
+  const okB = b === correctB;
+
+  state.validated[8] = true;
+
+  const inp8a = document.getElementById('fill8a');
+  const inp8b = document.getElementById('fill8b');
+  inp8a.disabled = true;
+  inp8b.disabled = true;
+  inp8a.classList.add(okA ? 'correct' : 'incorrect');
+  inp8b.classList.add(okB ? 'correct' : 'incorrect');
+
+  const earned = (okA && okB) ? 2 : (okA || okB) ? 1 : 0;
+  state.scores[8] = earned;
+
+  const isCorrect = okA && okB;
+  const fb = document.getElementById('fb-q8');
+  fb.className = `feedback visible ${isCorrect ? 'correct-fb' : 'incorrect-fb'}`;
+
+  let msg = '';
+  if (!okA) msg += `• Extension projet : la réponse correcte est <span class="correct-answer">.zprj</span><br>`;
+  if (!okB) msg += `• Format moteurs de jeu : la réponse correcte est <span class="correct-answer">.fbx</span>`;
+  if (isCorrect) msg = 'Les deux réponses sont correctes. Le fichier .zprj contient l\'ensemble du projet CLO3D, et .fbx est utilisé pour les moteurs Unity et Unreal.';
+
+  fb.innerHTML = `<strong>${isCorrect ? '✓ Parfait !' : `⚠ ${earned}/2 — Corrigé`}</strong>${msg}`;
+
+  markButton(8, isCorrect);
+  updateProgress();
+}
+
+// ── HELPERS ──────────────────────────────────────────────
+function markButton(qNum, isCorrect) {
+  const btn = document.getElementById(`btn-q${qNum}`);
+  btn.textContent = isCorrect ? '✓ Bonne réponse !' : '✗ Réponse enregistrée';
+  btn.classList.add('validated');
+  btn.style.background = isCorrect ? '#196B24' : '#8B2020';
+}
+
+const feedbacks = {
+  1: {
+    correct: 'CLO Virtual Fashion Inc. est une société sud-coréenne fondée en 2009, à l\'origine du logiciel CLO3D qui est aujourd\'hui une référence mondiale en simulation textile 3D.',
+    incorrect: 'CLO3D a été développé par CLO Virtual Fashion Inc., une société coréenne, fondée en 2009. Ce n\'est pas un produit Adobe ni Lectra.',
+  },
+  2: {
+    correct: 'FAUX — CLO3D va bien au-delà de la simple visualisation : il simule réellement les propriétés physiques des tissus (tombé, plis, élasticité, densité, friction) en temps réel.',
+    incorrect: 'La bonne réponse est FAUX. CLO3D simule activement le comportement physique des tissus (tombé, plis, contraintes mécaniques) et ne se contente pas de la visualisation.',
+  },
+  3: {
+    correct: 'Le "remplacement automatique des couturiers" n\'est pas mentionné parmi les avantages. Les avantages cités sont : réduction des coûts, accélération du time-to-market, zéro déchet, communication visuelle améliorée et personnalisation à grande échelle.',
+    incorrect: 'La bonne réponse est C. Les avantages listés dans le cours sont la réduction des coûts, l\'accélération du développement, le zéro déchet, la communication visuelle et la personnalisation. Le "remplacement des couturiers" n\'est pas évoqué.',
+  },
+  5: {
+    correct: 'C\'est la force centrale de CLO3D : toute modification apportée à un patron dans la fenêtre 2D se répercute instantanément sur le vêtement simulé en 3D. Cette synchronisation en temps réel est unique.',
+    incorrect: 'La bonne réponse est B. La caractéristique fondamentale de CLO3D est la synchronisation temps réel entre la fenêtre 2D (patronage) et la fenêtre 3D (simulation).',
+  },
+  6: {
+    correct: 'VRAI — Alt + Clic gauche est bien le raccourci pour l\'orbite (rotation) dans la fenêtre 3D. Alt + Clic milieu = Pan, Molette = Zoom.',
+    incorrect: 'La bonne réponse est VRAI. Alt + Clic gauche permet bien d\'orbiter autour de l\'avatar. Alt + Clic milieu pour le pan, et la molette pour le zoom.',
+  },
+  7: {
+    correct: 'Le Property Editor est effectivement le panneau contextuel central de CLO3D. Son contenu change dynamiquement selon l\'objet sélectionné : tissu, couture, avatar ou aucune sélection (propriétés globales).',
+    incorrect: 'La réponse correcte est le Property Editor (C). La Bibliothèque contient les actifs, l\'Object Browser liste les éléments de la scène, et la Toolbar offre des outils en accès rapide.',
+  },
+  9: {
+    correct: 'Le DXF (Drawing eXchange Format) est le standard industrie pour l\'échange de patrons entre Lectra, Optitex, Gerber AccuMark et CLO3D. Il existe en versions AAMA et ASTM.',
+    incorrect: 'La bonne réponse est .DXF (C). C\'est le Drawing eXchange Format, standard de l\'industrie textile. .SVG vient d\'Illustrator, .OBJ est pour la 3D, et .ZPRJ est le projet natif CLO3D.',
+  },
+  10: {
+    correct: 'VRAI — Le cours le souligne explicitement : un mauvais positionnement initial est la première cause d\'erreurs de simulation. Les pièces qui se croisent créent des interpénétrations impossibles à corriger par la simulation.',
+    incorrect: 'La bonne réponse est VRAI. Le cours mentionne que le positionnement correct des pièces avant simulation est critique, car les intersections créent des interpénétrations irréparables.',
+  },
+  11: {
+    correct: 'La courbe de Bézier est l\'outil approprié pour les tracés courbes complexes comme les emmanchures et les encolures. L\'outil Rectangle est pour les formes simples, et le Polygone pour les formes à arêtes droites.',
+    incorrect: 'La réponse correcte est C — la Courbe de Bézier. Cet outil permet des tracés courbes précis, indispensables pour les emmanchures et les encolures. Rectangle = formes simples, Polygone = arêtes droites.',
+  },
+  12: {
+    correct: 'La procédure correcte est : File > Import > DXF (Pattern) → Sélectionner le fichier .dxf → Choisir le système de mesure → Sélectionner la version AAMA/ASTM → Valider. C\'est l\'ordre exact du cours.',
+    incorrect: 'La séquence correcte est B : File > Import > DXF → Sélectionner le fichier → Choisir le système de mesure → Sélectionner la version AAMA/ASTM → Valider.',
+  },
+};
+
+function showFeedback(qNum, isCorrect, correctLabel, earned, maxPts) {
+  const fb = document.getElementById(`fb-q${qNum}`);
+  fb.className = `feedback visible ${isCorrect ? 'correct-fb' : 'incorrect-fb'}`;
+  const title = isCorrect ? `✓ Correct ! (+${earned} pt${earned > 1 ? 's' : ''})` : `✗ Incorrect (0 pt — réponse : ${correctLabel})`;
+  const body = feedbacks[qNum] ? (isCorrect ? feedbacks[qNum].correct : feedbacks[qNum].incorrect) : '';
+  fb.innerHTML = `<strong>${title}</strong>${body}`;
+}
+
+// ── SHOW RESULTS ─────────────────────────────────────────
+function showResults() {
+  const total = Object.values(state.scores).reduce((a, b) => a + b, 0);
+  const correct = Object.values(state.validated).filter(Boolean).length;
+
+  document.getElementById('r-score').textContent = total;
+
+  const pct = Math.round((total / state.maxPoints) * 100);
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = state.totalQuestions - Object.values(state.scores).filter(v => v > 0).length;
+  document.getElementById('r-pct').textContent = pct + '%';
+
+  let appreciation, cls;
+  if (pct >= 85) {
+    appreciation = `🏆 <strong>Excellent !</strong> Score de ${total}/20 (${pct}%). Vous maîtrisez très bien les fondamentaux de CLO3D, son interface et la gestion des patrons. Vous êtes prêt(e) pour les modules avancés.`;
+    cls = 'excellent';
+  } else if (pct >= 70) {
+    appreciation = `👍 <strong>Bien !</strong> Score de ${total}/20 (${pct}%). Vous avez une bonne compréhension des bases. Quelques points méritent révision — relisez les fiches des modules 1 à 3 pour consolider.`;
+    cls = 'good';
+  } else if (pct >= 50) {
+    appreciation = `📖 <strong>À améliorer.</strong> Score de ${total}/20 (${pct}%). Les bases sont partiellement acquises mais des notions importantes restent à travailler. Reprenez le support de cours avant le Quiz 2.`;
+    cls = 'average';
+  } else {
+    appreciation = `⚠️ <strong>Insuffisant.</strong> Score de ${total}/20 (${pct}%). Une révision complète des modules 1, 2 et 3 est nécessaire. N\'hésitez pas à consulter le support de cours et à revoir les exercices pratiques.`;
+    cls = 'poor';
+  }
+
+  document.getElementById('r-appreciation').className = `appreciation ${cls}`;
+  document.getElementById('r-appreciation').innerHTML = appreciation;
+
+  const resultsEl = document.getElementById('results-screen');
+  resultsEl.style.display = 'block';
+  resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── RETRY ────────────────────────────────────────────────
+function retryQuiz() {
+  if (confirm('Recommencer le quiz ? Toutes vos réponses seront effacées.')) {
+    location.reload();
+  }
+}
+</script>
+</body>
+</html>
